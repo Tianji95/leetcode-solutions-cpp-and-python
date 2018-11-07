@@ -19,19 +19,20 @@ public:
             int thisMapLen = (strMap[digits[i]]).size();
             int outLen = out.size();
             if(outLen!=0){
-                for(int k = 0; k < thisMapLen; k++){
-                    vector<string> tmp = out;
+                vector<string> tmp = out;
+                for(int k = 0; k < thisMapLen - 1; k++){
                     out.insert(out.end(), tmp.begin(), tmp.end());
                 }
                 int nowLen =  outLen * thisMapLen;
                 for(int v = 0; v < nowLen; v++){
-                    out[v] += strMap[digits[i]][v % outLen];
+                    out[v] += strMap[digits[i]][v / outLen];
                 }
             }
             else{
                 for(int k = 0; k < thisMapLen; k++){
-                    string tmp((strMap[digits[i]])[k]);
-                    out.push_back(tmp);
+                    string tmp("");
+					tmp = tmp + strMap[digits[i]][k];
+					out.push_back(tmp);
                 }
             }
 
