@@ -1,26 +1,36 @@
-/**
- * Definition for an interval.
- * struct Interval {
- *     int start;
- *     int end;
- *     Interval() : start(0), end(0) {}
- *     Interval(int s, int e) : start(s), end(e) {}
- * };
- */
+bool mysort(Interval left, Interval right){
+    return left.start < right.start;
+}
 class Solution {
 public:
-    bool mysort(Interval left, Interval right){
-        return left.start < right.start;
-    }
+
     vector<Interval> merge(vector<Interval>& intervals) {
         vector<Interval> out;
         int len = intervals.size();
         if(len == 0 || len == 1)
             return intervals;
         std::sort(intervals.begin(), intervals.end(), mysort);
-        for(int i = 0; i < len; i++){
-            
+        
+        int prevStart = intervals[0].start;
+        int prevEnd = intervals[0].end;
+        int prevIdx = 0;
+        out.push_back(intervals[0]);
+        
+        for(int i = 1; i < len; i++){
+            if(intervals[i].start <= prevEnd){
+                if(intervals[i].end > prevEnd){
+                    out[prevIdx].end = intervals[i].end;
+                    prevEnd = out[prevIdx].end;
+                }
+            }
+            else{
+                out.push_back(intervals[i]);
+                prevIdx++;
+                prevEnd = intervals[i].end;
+                prevStart = intervals[i].start;
+            }
         }
+        return out;
         
     }
 };
