@@ -1,0 +1,1 @@
+这道题用queue会很简单，但是空间复杂度是O(n),这里有一点很巧妙的是，把right->next = right->father->next->left 这样的一个操作，这样一下子就可以把空间复杂度降到O(1)
