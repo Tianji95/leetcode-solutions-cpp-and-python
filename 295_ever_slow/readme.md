@@ -1,0 +1,4 @@
+这道题有3个让人感到惊喜的点：
++ 使用现成的priority_queue而不是自己写一个平衡树
++ 使用两个priority_queue，一个存储最大的值，另一个存储负值，这样因为priority_queue是存储最大值堆的缺点就直接掩盖掉了
++ 第三个点就是在addNum的时候充分利用priority_queue的最大堆特性，先向small里面插入，然后把small里面的top值pop出来放到large里面，最后再把large里面的top值pop到small里面
