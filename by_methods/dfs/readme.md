@@ -4,9 +4,7 @@
 
 中间如果能够剪枝或者调换搜索顺序的话，可以让算法非常快的结束
 
-
-
-##### leetcode题目（23题）
+##### leetcode 题目（23 题）
 
 37
 
@@ -56,14 +54,12 @@
 
 546
 
+37 题：解数独的题目，一个 DFS 就可以搞定，其中比较麻烦的一点就是要修改行，列，块的时候，在改回原样时是反过来的
 
-
-37题：解数独的题目，一个DFS就可以搞定，其中比较麻烦的一点就是要修改行，列，块的时候，在改回原样时是反过来的
-
-51题：n皇后问题，一个dfs照样可以搞定，不过每行每列的时候，可以通过位运算来把每行每列都存下来，存到一个int数里面，如下方法：
+51 题：n 皇后问题，一个 dfs 照样可以搞定，不过每行每列的时候，可以通过位运算来把每行每列都存下来，存到一个 int 数里面，如下方法：
 
 ```
-class Solution 
+class Solution
 {
     int n;
     string getNq(int p)
@@ -90,7 +86,7 @@ class Solution
             }
     }
 public:
-    vector<vector<string> > solveNQueens(int n) 
+    vector<vector<string> > solveNQueens(int n)
     {
         this->n = n;
         vector<vector<string>> res;
@@ -100,7 +96,7 @@ public:
 };
 ```
 
-105题：通过前序和中序来生成树：查找前序的值在中序数组中的位置，位置以前的都是左子树，位置异或的都是右子树：
+105 题：通过前序和中序来生成树：查找前序的值在中序数组中的位置，位置以前的都是左子树，位置异或的都是右子树：
 
 ```
 class Solution {
@@ -132,9 +128,9 @@ public:
 };
 ```
 
-106题：通过中序和后序来生成树，从后往前查找后序在中序中的位置，前面的都是左子树，右边的都是右子树
+106 题：通过中序和后序来生成树，从后往前查找后序在中序中的位置，前面的都是左子树，右边的都是右子树
 
-199题：从右往左看一个树，输出所有看到的第一个数：遍历的时候先遍历右子树，有的话就直接插入，没有的话就插入左边的，判断输出数组的大小和层级就行了
+199 题：从右往左看一个树，输出所有看到的第一个数：遍历的时候先遍历右子树，有的话就直接插入，没有的话就插入左边的，判断输出数组的大小和层级就行了
 
 ```
 class Solution {
@@ -157,9 +153,9 @@ public:
 };
 ```
 
-200题：算一个矩阵里面有多少个岛屿，直接拿#号替代掉对应位置的值就好了
+200 题：算一个矩阵里面有多少个岛屿，直接拿#号替代掉对应位置的值就好了
 
-210题：先构图，构完图以后再进行dfs或者bfs：
+210 题：先构图，构完图以后再进行 dfs 或者 bfs：
 
 ```
 class Solution {
@@ -176,7 +172,7 @@ public:
             degree[iter[0]]++;
             mp[iter[1]].push_back(iter[0]);
         }
-        
+
         for (int i = 0; i < numCourses; i++) {
             int j = 0;
             for (; j < numCourses; j++) {
@@ -192,14 +188,14 @@ public:
             for (int v : mp[j]) {
                 degree[v]--;
             }
-        }        
+        }
         return out;
     }
 
 };
 ```
 
-282题：一个类似于堆栈计算器的题目，dfs来做，不过要注意乘号和+-号的优先级不一样，所以这里的做法是：把上一次操作的数字和符号记录下来，如果这次遇到乘号，就回退上次操作，然后做乘法，保留上次的符号到下一次
+282 题：一个类似于堆栈计算器的题目，dfs 来做，不过要注意乘号和+-号的优先级不一样，所以这里的做法是：把上一次操作的数字和符号记录下来，如果这次遇到乘号，就回退上次操作，然后做乘法，保留上次的符号到下一次
 
 ```
 class Solution {
@@ -243,7 +239,7 @@ public:
 };
 ```
 
-312题：打气球问题，每打一次气球，都会把当前气球分数和两边的气球分数乘起来，求最大的分数，其实这是一道dp的问题，dp的公式是表示left到right中间这一段的最大值，其中要用for循环寻找每一个left到right中间的值，这样才能取到最大值
+312 题：打气球问题，每打一次气球，都会把当前气球分数和两边的气球分数乘起来，求最大的分数，其实这是一道 dp 的问题，dp 的公式是表示 left 到 right 中间这一段的最大值，其中要用 for 循环寻找每一个 left 到 right 中间的值，这样才能取到最大值
 
 ```
 class Solution {
@@ -252,7 +248,7 @@ public:
     int maxCoins(vector<int>& inums) {
         out = 0;
         vector<int> nums(inums.size()+2, 1);
-        
+
         for(int i = 0; i < inums.size(); i++){
             nums[i+1] = inums[i];
         }
@@ -272,9 +268,7 @@ public:
 };
 ```
 
-332题
-
-
+332 题
 
 ```
 bool mycomp(const std::string& first, const std::string& second)
@@ -291,10 +285,10 @@ bool mycomp(const std::string& first, const std::string& second)
 
 class Solution
 {
-public:	
+public:
     vector<string> out;
 	unordered_map<string, list<string>> mp;
-    
+
     void dfs(string& now){
         while(true){
             if(mp.find(now)==mp.end() || mp[now].size()==0){
@@ -323,11 +317,11 @@ public:
         reverse(out.begin(), out.end());
         return out;
     }
-    
+
 };
 ```
 
-337题:
+337 题:
 
 ```
 class Solution {
@@ -339,7 +333,7 @@ public:
         int rr = 0;
         if(node->left){
             l = dfs(node->left, ll, lr);
-        }      
+        }
         if(node->right){
             r = dfs(node->right, rl, rr);
         }
@@ -355,14 +349,12 @@ public:
 };
 ```
 
-
-
-399题：给出一组序列的比例关系，让你去递推其他序列的比例关系，先做图，然后递归进行递推
+399 题：给出一组序列的比例关系，让你去递推其他序列的比例关系，先做图，然后递归进行递推
 
 ```
 class Solution {
 public:
-    
+
     unordered_map<string, unordered_map<string, double>> mp;
     double dfs(string in, string out, double now, unordered_set<string>& isvisit){
         if(mp.find(in)!=mp.end()){
@@ -404,11 +396,272 @@ public:
 };
 ```
 
-403题：
+403 题： 青蛙跳石头，排过序的 DFS，剪枝操作对于 dfs 是非常重要的，以及对于这些排过序的数组，从前往后和从后往前遍历的效果是不一样的
+
+417 题：大西洋和太平洋, 其实思路不难，主要是通过位运算来对每一个单元来进行标记，标记是否流到大西洋或者太平洋，位运算在这里非常重要，存到一个 cache（或者 dp）里面
+
+```C++
+class Solution {
+public:
+    void dfs(vector<vector<int>>& matrix, vector<vector<int>>& dp, int h, int w, int label){
+        dp[h][w] |= label;
+        if(h+1<height&&(dp[h+1][w]&label)!=label&&matrix[h+1][w]>=matrix[h][w]){
+            dfs(matrix, dp, h+1, w, label);
+        }
+        if(h-1>=0&&(dp[h-1][w]&label)!=label&&matrix[h-1][w]>=matrix[h][w]){
+            dfs(matrix, dp, h-1, w, label);
+        }
+        if(w-1>=0&&(dp[h][w-1]&label)!=label&&matrix[h][w-1]>=matrix[h][w]){
+            dfs(matrix, dp, h, w-1, label);
+        }
+        if(w+1<width&&(dp[h][w+1]&label)!=label&&matrix[h][w+1]>=matrix[h][w]){
+            dfs(matrix, dp, h, w+1, label);
+        }
+    }
+    int height;
+    int width;
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& matrix) {
+        vector<vector<int>> out;
+
+        height = matrix.size();
+        if(height == 0)
+            return out;
+        width  = matrix[0].size();
+        if(width == 0)
+            return out;
+
+        vector<vector<int>> dp(height, vector<int>(width, 0));
+
+        for(int h = 0; h < height; h++){
+            dfs(matrix, dp, h, 0, 1);
+            dfs(matrix, dp, h, width-1, 2);
+        }
+
+        for(int w = 0; w < width; w++){
+            dfs(matrix, dp, 0, w, 1);
+            dfs(matrix, dp, height-1, w, 2);
+        }
+
+        for(int h = 0; h < height; h++){
+            for(int w = 0; w < width; w++){
+                if(dp[h][w]==3){
+                    vector<int> tmp;
+                    tmp.push_back(h);
+                    tmp.push_back(w);
+                    out.push_back(move(tmp));
+                }
+
+            }
+        }
+        return out;
+    }
+};
+```
+
+464题：两个人相互报数，最先加到一个数的人先赢，这里也是用的dfs，不过这里面
+
+```
+class Solution {
+public:
+    unordered_map<int, bool> cache;
+    bool dfs(vector<int>& visit, int maxChoosableInteger, int last){
+        if(last<=0)
+            return false;
+            
+        int choosen = 0;
+        for(int i = 0; i < visit.size(); i++){
+            if(visit[i]==1)
+                choosen |= (1<<i);
+        }
+        if(cache.find(choosen)!=cache.end()){
+            return cache[choosen];
+        }
+
+        for(int i = 1; i <= maxChoosableInteger; i++){
+            if(visit[i-1])
+                continue;
+            visit[i-1] = 1;
+            if(!dfs(visit, maxChoosableInteger, last-i)){
+                visit[i-1] = 0;
+                cache[choosen] = true;
+                return true;
+            }
+            visit[i-1] = 0;
+        }
+        cache[choosen] = false;
+        return false;
+
+    }
+
+    bool canIWin(int maxChoosableInteger, int desiredTotal) {
+        vector<int> visit(maxChoosableInteger, 0);
+
+        if (desiredTotal <= maxChoosableInteger) 
+            return true;
+        if (((1 + maxChoosableInteger) / 2 * maxChoosableInteger) < desiredTotal)
+            return false;
+
+        return dfs(visit, maxChoosableInteger, desiredTotal);
+    }
+};
+```
 
 
 
+472题：查找子串的问题
 
+```
+bool mycomp(const string& l, const string& r){
+    return l.size() < r.size();
+}
 
+class Solution {
+public:
+    bool dfs(string& word, unordered_set<string>& wordset){
+        if(word.size()==0)
+            return false;
+        vector<bool> dpArray(word.size()+1, false);
+        dpArray[0] = true;
+        for(int i = 1; i <= word.size(); i++){
+            for(int j = i-1; j >= 0; j--){
+                string subS = word.substr(j, i-j);
+                if(dpArray[j] && wordset.find(subS)!=wordset.end()){
+                    dpArray[i] = true;
+                    break;
+                }
+            }
+        }
+        return dpArray[word.size()];
+    }
+    
+    vector<string> findAllConcatenatedWordsInADict(vector<string>& words) {
+        sort(words.begin(), words.end(), mycomp);
+        vector<string> out;
+        unordered_set<string> wordset;
 
+        for(int i = 0; i < words.size(); i++){
+            if(dfs(words[i], wordset)){
+                out.push_back(words[i]);
+            }
+            wordset.insert(words[i]);
+        }
+        return out;
+    }
+};
+```
+
+488题：祖玛游戏，祖玛游戏这个题目，是把字符串最后加了一个#号，然后把问题分解成，迭代删除相同颜色的球，以及从左往右依次插入球
+
+```
+class Solution {
+public:
+    int counts[5];
+    int MAX_COUNT = 6;
+    string removeDup(string s){
+        int len = s.size();
+        int left = 0;
+        int right = 0;
+        for(; left < len && right < len; right++){
+            if(s[left]==s[right])
+                continue;
+            if(right-left>=3)
+                return removeDup(s.substr(0, left)+s.substr(right, len-right));
+            else
+                left = right;
+        }
+        return s;
+    }
+    
+    int dfs(string s){
+        s = removeDup(s);
+        if(s=="#"){
+            return 0;
+        }
+        int out = MAX_COUNT;
+        int left = 0;
+        int right = 0;
+        int len = s.size();
+
+        for(; left < len && right < len; right++){
+            if(s[left]==s[right])
+                continue;
+            int need = 3-(right-left);
+            if(s[left]=='R' && counts[0]>=need){
+                counts[0]-=need;
+                out = min(out, need+dfs(s.substr(0, left)+s.substr(right, len-right)));
+                counts[0]+=need;
+            }
+            else if(s[left]=='Y' && counts[1]>=need){
+                counts[1]-=need;
+                out = min(out, need+dfs(s.substr(0, left)+s.substr(right, len-right)));
+                counts[1]+=need;
+            }
+            else if(s[left]=='B' && counts[2]>=need){
+                counts[2]-=need;
+                out = min(out, need+dfs(s.substr(0, left)+s.substr(right, len-right)));
+                counts[2]+=need;
+            }
+            else if(s[left]=='G' && counts[3]>=need){
+                counts[3]-=need;
+                out = min(out, need+dfs(s.substr(0, left)+s.substr(right, len-right)));
+                counts[3]+=need;
+            }            
+            else if(s[left]=='W' && counts[4]>=need){
+                counts[4]-=need;
+                out = min(out, need+dfs(s.substr(0, left)+s.substr(right, len-right)));
+                counts[4]+=need;
+            }
+            left = right;
+        }
+        return out;
+    }
+
+    int findMinStep(string board, string hand) {
+
+        memset(counts, 0, sizeof(counts));
+        for(auto c : hand){
+            switch(c){
+                case 'R': counts[0]++;break;
+                case 'Y': counts[1]++;break;
+                case 'B': counts[2]++;break;
+                case 'G': counts[3]++;break;
+                case 'W': counts[4]++;break;
+            }
+        }
+
+        int out = dfs(board+"#");
+        return out==MAX_COUNT?-1:out;
+    }
+};
+```
+
+546题：开心消消乐
+
+```
+class Solution {
+public:
+    int dfs(vector<vector<vector<int>>>& dp, vector<int>& boxes, int l, int r, int k){
+        if(l > r) return 0;
+        if(dp[l][r][k] > 0) return dp[l][r][k];
+        
+        for(; l+1 <= r && boxes[l+1] == boxes[l]; l++, k++);
+        int out = (k+1)*(k+1) + dfs(dp, boxes, l+1, r, 0);
+
+        for(int i = l+1; i <= r; i++){
+            if(boxes[l]==boxes[i]){
+                out = max(out, dfs(dp, boxes, l+1, i-1, 0) + dfs(dp, boxes, i, r, k+1));
+            }
+        }
+        dp[l][r][k] = out;
+        return out;
+    }
+
+    int removeBoxes(vector<int>& boxes) {
+        int len = boxes.size();
+        vector<vector<vector<int>>> dp(len, vector<vector<int>>(len, vector<int>(len, 0)));
+
+        return dfs(dp, boxes, 0, len-1, 0);
+    }
+};
+```
 
