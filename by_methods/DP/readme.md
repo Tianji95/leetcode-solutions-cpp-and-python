@@ -261,3 +261,229 @@ public:
 };
 ```
 
+97题：计算两个字符串是否能拼成第三个字符串
+
+```
+class Solution
+{
+public:
+	bool isInterleave(string s1, string s2, string s3) {
+		int len1 = s1.size();
+		int len2 = s2.size();
+        if(len1+len2 != s3.size())
+            return false;
+		vector<vector<int>> dp(len1 + 1, vector<int>(len2 + 1, 0));
+
+        dp[0][0] = 1;
+
+        for (int i = 1; i <= len1; i++)
+        {
+            if (s1[i - 1] == s3[i - 1])
+            {
+                dp[i][0] = dp[i-1][0];
+                if (dp[i][0] == 0)
+                    break;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        for (int i = 1; i <= len2; i++)
+        {
+            if (s2[i - 1] == s3[i - 1])
+            {
+                dp[0][i] = dp[0][i - 1];
+                if (dp[0][i] == 0)
+                    break;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        for (int i = 1; i <= len1; i++)
+        {
+            for (int j = 1; j <= len2; j++)
+            {
+                if (s1[i - 1] == s3[i + j - 1])
+                {
+                    dp[i][j] |= dp[i - 1][j];
+                }
+                if (s2[j - 1] == s3[i + j - 1])
+                {
+                    dp[i][j] |= dp[i][j - 1];
+                }
+            }
+        }
+
+        return dp[len1][len2] > 0;
+    }
+};
+```
+
+115题，字符串的题目，查找一个字符串从另一个字符串中提取出来的数量
+
+```
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int lens = s.size();
+        int lent = t.size();
+        vector<vector<long>> dp(lens+1, vector<long>(lent+1, 0));
+
+        dp[0][0] = 1;
+        for(int i = 0; i <= lens; i++){
+            dp[i][0] = 1;
+        }
+        for(int i = 0; i < lens; i++){
+            for(int j = 0; j < lent; j++){
+                if(s[i]==t[j]){
+                    dp[i+1][j+1] = dp[i][j] + dp[i][j+1];
+                }
+                else{
+                    dp[i+1][j+1] = dp[i][j+1];
+                }
+            }
+        }
+
+        return dp[lens][lent];
+    }
+};
+```
+
+·123题，有两次买卖的机会，求出最大的收益，这里面设定两个值就好了，如果是两个以上的话，应该可以弄一个数组一类的东西来存当前的收益
+
+188题，有多次买卖的机会，弄一个数组来处理最大收益，不过还要考虑K很大的极端情况，这个时候就需要用到前面两个easy的方法了
+
+```
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int len = prices.size();
+        if(len == 1 || len == 0)
+            return 0;
+        int sel1 = 0;
+        int buy1 = INT_MIN;
+        int sel2 = 0;
+        int buy2 = INT_MIN;
+        
+        for(int i = 0; i < len; i++){
+            buy1 = max(buy1, -prices[i]);
+            sel1 = max(prices[i]+buy1, sel1);
+            buy2 = max(sel1-prices[i], buy2);
+            sel2 = max(prices[i]+buy2, sel2);
+        }
+        return sel2;
+    }
+};
+
+```
+
+```
+class Solution {
+public:
+    int maxProfit(int k, vector<int>& prices) {
+
+        int len = prices.size();
+
+        if(k>len/2){
+            int out = 0;
+            int buy = INT_MAX;
+            for(int i = 0; i < len; i++){
+                if(prices[i] > buy){
+                    out += prices[i]-buy;
+                    buy = prices[i];
+                }
+                else{
+                    buy = prices[i];
+                }
+            }
+            return out;
+        }
+
+        vector<int> buys(k+1, INT_MIN);
+        vector<int> sels(k+1, 0);
+        int out = INT_MIN;
+        for(int i = 0; i < len; i++){
+            for(int j = 1; j <= k; j++){
+                buys[j] = max(buys[j], sels[j-1]-prices[i]);
+                sels[j] = max(prices[i]+buys[j], sels[j]);
+                out = max(out, sels[j]);
+            }
+        }
+        return max(out, 0);
+    }
+};
+```
+
+
+
+132题：给一串字符串，求这个字符串全部拆分成回文子串需要的最小次数。解题思路是用动态规划数组存储每一个idx为止字符串的最小切分次数，，然后以一个变量来存储最大回文串的长度，不断向前递归，求解最小值，代码如下：
+
+```
+class Solution {
+public:
+    bool ispali(string s){
+        int len = s.size();
+        int left = 0;
+        int right = len-1;
+        while(left < right){
+            if(s[left++]!=s[right--])
+                return false;
+        }
+        return true;
+    }
+    
+    int minCut(string s) {
+
+        int len = s.size();
+        vector<int> dp(len+1, 0);
+
+        for(int i = 0; i <= len; i++){
+            dp[i] = i-1;
+        }
+        for(int i = 1; i < len; i++){
+            for(int j = 0; j <= i && i+j<len && s[i-j]==s[i+j]; j++){ // 偶数
+                dp[i+j+1] = min(dp[i+j+1], 1+dp[i-j]);
+            }
+            for(int j = 0; j <=i-1 && i+j<len && s[i-j-1]==s[i+j]; j++){ //奇数
+                dp[i+j+1] = min(dp[i+j+1], 1+dp[i-j-1]);
+            }
+        }
+        return dp[len];
+    }
+
+};
+```
+
+213题：中间不能有相邻两个数相加，收尾不能同时相加，其实只要两个dp就可以解决了。。。代码如下：
+
+```
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int len = nums.size();
+        if(len == 0)
+            return 0;
+        if(len == 1)
+            return nums[0];
+        
+        len = nums.size();
+        int out = 0;
+        vector<int> dp1(len+1, 0);
+        vector<int> dp2(len+1, 0);
+        dp1[0] = 0;
+        dp1[1] = nums[0];
+
+        for(int i = 2; i <= len; i++){
+            dp1[i] = max(dp1[i-1], dp1[i-2]+nums[i-1]);
+            dp2[i] = max(dp2[i-1], dp2[i-2]+nums[i-1]);
+        }
+        return max(dp1[len-1],dp2[len]);
+    }
+};
+```
+
