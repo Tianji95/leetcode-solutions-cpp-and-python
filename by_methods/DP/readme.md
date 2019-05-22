@@ -487,3 +487,164 @@ public:
 };
 ```
 
+264题：找到按照顺序的ugly number， uglynumber值得是所有的最小公约数可以分解成2,3,5，题目主要是需要用三个索引分别指向2,3,5
+
+```
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        
+        vector<int> dp(n+1, 0);
+
+        dp[0] = 1;
+        int idx1 = 0;
+        int idx2 = 0;
+        int idx3 = 0;
+        int num1,num2,num3;
+        num1 = num2 = num3 = 1;
+
+        for(int i = 1; i <= n; i++){
+
+            dp[i] = min(num1, min(num2, num3));
+            if(dp[i]==num1){
+                idx1++;
+                num1 = dp[idx1]*2;
+            }
+            if(dp[i]==num2){
+                idx2++;
+                num2 = dp[idx2]*3;
+            }
+            if(dp[i]==num3){
+                idx3++;
+                num3 = dp[idx3]*5;
+            }
+        }
+        return dp[n];
+    }
+};
+```
+
+322题：这道题是给一组硬币的面额，然后给一个目标数字，求出最小需要多少枚硬币，具体方法就是按照目标数字建立dp数组，然后再在里面遍历所有硬币，判断是否存在减去这个硬币以后的数值
+
+```
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        int Max = amount + 1;
+        vector<int> dp(amount + 1, Max);
+        dp[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            for (int j = 0; j < coins.size(); j++) {
+                if (coins[j] <= i) {
+                    dp[i] = min(dp[i], dp[i - coins[j]] + 1);
+                }
+            }
+        }
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+};
+```
+
+368题：这道题开了两个动态规划数组，一个是用来存个数的，另一个是用来存数字链的，其中parent表示比他大的数字链最多的那个数的索引
+
+```
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        
+        vector<int> T(nums.size(), 0);
+        vector<int> parent(nums.size(), 0);
+
+        int m = 0;
+        int mi = 0;
+
+        for(int i = nums.size() - 1; i >= 0; --i)
+        {
+            for(int j = i; j < nums.size(); ++j)
+            {
+                if(nums[j] % nums[i] == 0 && T[i] < 1 + T[j])
+                {
+                    T[i] = 1 + T[j];
+                    parent[i] = j;
+
+                    if(T[i] > m)
+                    {
+                        m = T[i];
+                        mi = i;
+                    }
+                }
+            }
+        }
+
+        vector<int> out;
+
+        for(int i = 0; i < m; ++i)
+        {
+            out.push_back(nums[mi]);
+            mi = parent[mi];
+        }
+
+        return out;
+    }
+
+};
+```
+
+375题：这一题和上面有一题非常的类似，都是最外面一层for循环表示长度，然后中间一层表示左边，最后一层表示在左和右之间的区间内进行循环遍历，查找最大的值，从而不断迭代dp中某一个元素的值，代码如下：
+
+```
+class Solution {
+public:
+    int getMoneyAmount(int n) {
+        vector<vector<int>> dp(n+1, vector<int>(n+1, 0));
+        
+        for(int len = 2; len <= n; len++){
+            for(int left = 1; left <= n-len+1; left++){
+                dp[left][left+len-1]=INT_MAX;
+                for(int right=left; right < left+len-1;right++){
+                    int costForThisGuess = 0;
+                    if(right==n){
+                        costForThisGuess = dp[left][right-1]+right;
+                    }
+                    else{
+                        costForThisGuess = max(dp[left][right-1], dp[right+1][left+len-1]) + right;
+                    }
+                    dp[left][left+len-1] = min(dp[left][left+len-1], costForThisGuess);
+                }
+            }
+        }
+        return dp[1][n];
+    }
+};
+```
+
+494题：
+
+```
+class Solution {
+public:
+    int subset(vector<int>&nums, int s){
+        vector<int> dp(s+1, 0);
+        dp[0] = 1;
+        for(int j = 0; j < nums.size();j++){
+            for(int i = s; i >= nums[j]; i--){
+                dp[i] += dp[i-nums[j]];
+            }
+        }
+        return dp[s];
+    }
+    int findTargetSumWays(vector<int>& nums, int S) {
+
+        int sum = accumulate(nums.begin(), nums.end(), 0);
+        if(sum<S){
+            return 0;
+        }
+        if((sum+S)%2==1){
+            return 0;
+        }
+        return subset(nums, (sum+S)>>1);
+    }
+};
+```
+
