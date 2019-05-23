@@ -619,7 +619,121 @@ public:
 };
 ```
 
-494题：
+410题：更像是一个二分检索方法，以后注意二分检索的用法，要在任何时候，想到用一个left和right两个数字，然后每次找数的时候都取中值，不断迭代出最后的结果
+
+```
+class Solution {
+public:
+    bool check(vector<int>& nums, int cut, long long maxtarget){
+        long long acc = 0;
+        for(auto& num : nums){
+            if(num+acc<=maxtarget){
+                acc += num;
+            }
+            else{
+                cut--;
+                acc = num;
+                if(cut<0)
+                    return false;
+            }
+        }
+        return true;
+    }
+    
+    int splitArray(vector<int>& nums, int m) {
+        int len = nums.size();
+        if(len==0)
+            return 0;
+
+        int left  = 0;
+        long long right = 0;
+        long long mid = 0;
+
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i]>left){
+                left = nums[i];
+            }
+            right += nums[i];
+        }
+
+        while(left < right){
+            mid = (left+right)/2;
+            if(check(nums, m-1, mid)){
+                right = mid;
+            }
+            else{
+                left  = mid+1;
+            }
+        }
+        return left;
+    }
+};
+```
+
+446题：用一个嵌套map来写这道题，一个保存index，另一个保存diff，但是加的时候，只加后面那个值，没搞太明白为什么，代码如下：
+
+```
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& A) {
+        vector<unordered_map<int, int>> dp(A.size());
+        int out = 0;
+
+        for(int i = 0; i < A.size(); i++){
+            for(int j = 0; j < i; j++){
+                if((long)A[i] - (long)A[j] > INT_MAX || (long)A[i] - (long)A[j] < INT_MIN) continue;
+                int diff = A[i]-A[j];
+                dp[i][diff] += 1;
+                if(dp[j].find(diff)!=dp[j].end()){
+                    dp[i][diff]+=dp[j][diff];
+                    out+=dp[j][diff];
+                }
+            }
+        }
+        return out;
+    }
+};
+```
+
+474题：多重背包问题，直接放代码，和下面494题的思路是差不多的
+
+```
+class Solution {
+
+
+
+public:
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        
+        int out = 0;
+        int len = strs.size();
+
+        vector<vector<int>> nums(len, vector<int>(2, 0));
+
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j < strs[i].size(); j++){
+                nums[i][strs[i][j]-'0']++;
+            }
+        }
+
+        vector<vector<int>> dp(m+1, vector<int>(n+1, 0));
+        for(int i = 0; i < len; i++){
+            for(int j = m; j >= nums[i][0]; j--){
+                for(int k = n; k >= nums[i][1]; k--){
+                    dp[j][k] = max(dp[j][k], dp[j-nums[i][0]][k-nums[i][1]]+1);
+                }
+            }
+        }
+
+        return dp[m][n];
+    }
+
+};
+```
+
+
+
+494题：这一段subset的代码非常重要，dp里面的内容指的是，在一串数组中，加起来得到i的可能性的个数，下面这个图片非常重要，也非常清晰，图片中的数组是\[1,1,1,1,1],最左边的1应该是0。而且一定要有dp\[0]=1，因为这个表示当相加都等于0的时候，有一种情况，就是什么都不选![0_1485048724190_Screen Shot 2017-01-21 at 8.31.48 PM.jpg](https://leetcode.com/uploads/files/1485048726667-screen-shot-2017-01-21-at-8.31.48-pm.jpg)
 
 ```
 class Solution {
@@ -644,6 +758,111 @@ public:
             return 0;
         }
         return subset(nums, (sum+S)>>1);
+    }
+};
+```
+
+516题：查找最长子字符串的问题，在一个字符串中找到存在的最长的子字符串，子字符串各个字母之间可以跳着
+
+```
+class Solution {
+public:
+    int longestPalindromeSubseq(string s) {
+        int len = s.size();
+        vector<vector<int>> dp(len, vector<int>(len, 0));
+        
+        for(int i = 0; i < len; i++){
+            dp[i][i] = 1;
+        }
+
+        for(int l = 2; l <= len; l++){
+            for(int left = 0; left < len-l+1; left++){
+                int right = left + l-1;
+                if(s[left]==s[right]){
+                    dp[left][right] = dp[left+1][right-1]+2;
+                }
+                else{
+                    dp[left][right] = max(dp[left+1][right], dp[left][right-1]);
+                }
+            }
+        }
+        return dp[0][len-1];
+    }
+};
+```
+
+518题，硬币的问题，给一组硬币和一个目标值，输出有多少种方法：
+
+```
+class Solution {
+public:
+    int change(int amount, vector<int>& coins) {
+        vector<int> dp(amount+1, 0);
+        
+        dp[0] = 1;
+        for(int i = 0; i < coins.size(); i++){
+            for(int j = coins[i]; j <= amount; j++){
+                dp[j] += dp[j-coins[i]];
+            }
+        }
+        return dp[amount];
+    }
+};
+```
+
+576题：给一个矩形的固定边长，以及一个球的位置，需要走的步数，然后求出所有可能的操作的步数
+
+```
+class Solution {
+public:
+    int findPaths(int height, int width, int N, int I, int J) {
+        vector<vector<vector<uint>>> dp(N+1, vector<vector<uint>>(height, vector<uint>(width, 0)));
+        auto counts = [&](int k, int i, int j){
+            return (i<0||i>=height||j<0||j>=width)?1:dp[k][i][j];
+        };
+        for(int n = 1; n <= N; n++){
+            for(int h = 0; h < height; h++){
+                for(int w = 0; w < width; w++){
+                    dp[n][h][w] = counts(n-1, h-1, w) + counts(n-1, h, w-1) + counts(n-1, h+1, w) + counts(n-1, h, w+1);
+                    dp[n][h][w] = dp[n][h][w] % (1000000007);
+                }
+            }
+        }
+        return dp[N][I][J];
+    }
+};
+```
+
+
+
+583题：两个字符串的问题，直接用dp来表示两个字符串的索引，dp内容表示需要操作的最小步骤：
+
+```
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int len1 = word1.size();
+        int len2 = word2.size();
+        vector<vector<int>> dp(len1+1, vector<int>(len2+1, 0));
+        
+        for(int i = 0; i <= len1; i++){
+            dp[i][0] = i;
+        }
+        for(int i = 0; i <= len2; i++){
+            dp[0][i] = i;
+        }
+
+        for(int i = 1; i <= len1; i++){
+            for(int j = 1;j <= len2; j++){
+                if(word1[i-1] == word2[j-1]){
+                    dp[i][j] = dp[i-1][j-1];
+                }
+                else{
+                    dp[i][j] = min(dp[i-1][j-1]+2, min(dp[i-1][j]+1, dp[i][j-1]+1));
+                }
+            }
+        }
+        return dp[len1][len2];
     }
 };
 ```
