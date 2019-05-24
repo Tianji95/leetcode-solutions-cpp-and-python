@@ -810,6 +810,88 @@ public:
 };
 ```
 
+546题：给一串数组，相同颜色的可以消除，得到共计K*K分，和zuma游戏有些像，具体的方法是把消除的个数存起来，然后拆分成两半，，其中K指的是right右边有一串k个相同颜色的数组，同时right和后面的这几个颜色相同的数字颜色一样，分别计算：
+
+```
+class Solution {
+public:
+    int dfs(vector<int>& boxes, vector<vector<vector<int>>>& dp, int left, int right, int K){
+        
+
+    ```
+        if(left > right)
+            return 0;
+
+        if(dp[left][right][K]!=0)
+            return dp[left][right][K];
+
+        //循环找到最小的right
+        for( ; left<right&&boxes[right]==boxes[right-1]; right--, K++);
+
+        dp[left][right][K] = (K+1)*(K+1) + dfs(boxes, dp, left, right-1, 0);
+
+        for(int i = left; i < right; i++){
+            if(boxes[right]==boxes[i]){
+                dp[left][right][K] = max(dp[left][right][K], dfs(boxes, dp, left, i, K+1)+dfs(boxes, dp, i+1, right-1, 0));
+            }
+        }
+
+        return dp[left][right][K];
+    }
+
+    int removeBoxes(vector<int>& boxes) {
+        int len = boxes.size();
+        vector<vector<vector<int>>> dp(len, vector<vector<int>>(len, vector<int>(len, 0)));
+        return dfs(boxes, dp, 0, len-1, 0);
+    }
+    ```
+
+};
+
+
+```
+
+552题：连续字符串问题，有一个字符最多只能出现一次，有一个字符不能连续出现超过两次，那么我们就用一个dp的维度来判断是否出现了一次，另一个维度来判断第二个字符出现了一次，两次还是零次，最后一个字符判断长度index
+
+
+
+```
+class Solution {
+public:
+    int checkRecord(int n) {
+        
+        // 0 : A
+        // 1 : L
+        // 2 : P
+
+        vector<vector<vector<int>>> dp(2, vector<vector<int>>(3, vector<int>(n+1, 0)));
+
+        for(int i = 0; i < 2; i++){
+            for(int j = 0; j < 3; j++){
+                dp[i][j][0] = 1;
+            }
+        }
+        for(int k = 1; k <= n; k++){
+            for(int i = 0; i < 2; i++){
+                for(int j = 0; j < 3; j++){
+
+                    dp[i][j][k] = dp[i][2][k-1]%1000000007; //P
+                    if(i>0){
+                         dp[i][j][k] =  (dp[i][j][k] + dp[i-1][2][k-1])%1000000007;//A
+                    }
+                    if(j>0){
+                        dp[i][j][k]  =  (dp[i][j][k] + dp[i][j-1][k-1])%1000000007;
+                    }
+                }
+            }
+        }
+        return dp[1][2][n];
+    }
+};
+```
+
+
+
 576题：给一个矩形的固定边长，以及一个球的位置，需要走的步数，然后求出所有可能的操作的步数
 
 ```
@@ -866,4 +948,44 @@ public:
     }
 };
 ```
+
+600题，位运算的题目， 每一个dp数组存的是位数，这里面是从左往右计算的，一旦出现连续位就直接跳出：
+
+```
+class Solution {
+public:
+    int findIntegers(int num) {
+        if(num==1)
+            return 2;
+        if(num==0)
+            return 1;
+        int dp[32];
+        memset(dp, 0, sizeof(dp));
+        
+        dp[0] = 1;
+        dp[1] = 2;
+
+        for(int i = 2; i < 32; i++){
+            dp[i] = dp[i-1] + dp[i-2];
+        }
+
+        int out = 0;
+        bool prev = false;
+        for(int i = 30; i >= 0; i--){
+            if(num&(1<<i)){
+                out += dp[i];
+                if(prev){
+                    return out;
+                }
+                prev = true;
+            }
+            else{
+                prev = false;
+            }
+        }
+        return out+1;
+    }
+};
+```
+
 
