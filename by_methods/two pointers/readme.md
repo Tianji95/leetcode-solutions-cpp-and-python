@@ -6,7 +6,7 @@
 
 
 
-##### leetcode题目（24题）
+##### leetcode题目（22题）
 
 3
 
@@ -43,10 +43,6 @@
 283
 
 287
-
-340
-
-360
 
 395
 
@@ -259,6 +255,190 @@ public:
         }
 
         return out;
+    }
+};
+```
+
+75题：三指针的算法，可以用left/mid/right三个指针来进行移动，0-left必定都是0，mid在left前面，把遇到的所有2都交给right-len， 这样mid和left之前肯定都是1了。
+
+
+
+```
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+        int left = 0;
+        int mid  = 0;
+        int right = nums.size()-1;
+        
+        while(mid<=right){
+            if(nums[mid]==0){
+                swap(nums[mid], nums[left]);
+                left++;
+                mid++;
+            }
+            else if(nums[mid]==1){
+                mid++;
+            }
+            else if(nums[mid]==2){
+                swap(nums[mid], nums[right]);
+                right--;
+            }
+        }
+    }
+};
+```
+
+76题，双指针的算法，查找最短的拥有另一个字符字母的子字符串
+
+```
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        unordered_map<char, int> count;
+       
+        int outleft = INT_MAX;
+        int outright = INT_MAX;
+        int maxlen = INT_MAX;
+        int left  = 0;
+        int right = 0;
+        int len = s.size();
+        int totalcount = t.size();
+        bool ishas = false;
+
+        for(auto& ss : t){
+            count[ss]++;
+        }
+
+        while(right < len){
+            if(count.find(s[right])!=count.end()){
+                count[s[right]]--;
+                totalcount--;
+                if(totalcount<=0 && count[s[right]]<=0){
+                    ishas = true;
+                    for(auto& iter : count){
+                        if(iter.second>0){
+                            ishas = false;
+                            break;
+                        }
+                    }
+                    if(ishas){
+                        while(left<=right){
+                            if(maxlen>right-left+1){
+                                outleft = left;
+                                outright = right; 
+                                maxlen = right-left+1;
+                            }
+                            if(count.find(s[left])!=count.end()){
+                                count[s[left]]++;
+                                totalcount++;
+                                if(count[s[left]]>0){
+                                    left++;
+                                    break;
+                                }
+
+                            }
+                            left++;
+                        }
+                    }
+                }
+            }
+            right++;
+        }
+        if(outleft==outright&&outright==INT_MAX){
+            return "";
+        }
+        return s.substr(outleft, outright-outleft+1);;
+    }
+};
+```
+
+88题：合并两个已经排序的数组，这里面是从后往前进行遍历的，先从大的数还是插，最后插入最小的数。虽然是easy，但是从后往前的思路非常的重要
+
+```
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int first  = m-1;
+        int second = n-1;
+        int total  = m+n-1;
+        
+        while(first>=0 && second>=0){
+            if(nums1[first]>nums2[second]){
+                nums1[total--] = nums1[first--];
+            }
+            else{
+                nums1[total--] = nums2[second--];
+            }
+        }
+        while(first>=0){
+            nums1[total--] = nums1[first--];
+        }
+        while(second>=0){
+            nums1[total--] = nums2[second--];
+        }
+    }
+};
+```
+
+142题：检测链表里面是否有环，并且把环里面第一个node给输出出来，这里面检测链表是否有环很简单，但是把环里面的输出出来就很麻烦。它里面是设right走了2*k步，left走了k步，环的长度是r,第一个节点到环头的距离是s,环头到指针相遇的节点距离为m，那么有：
+
+2k-k = nr;
+
+s+m = k
+
+s = k-m = nr-m = nr-r+r-m 当n==1的时候s=r-m就是环剩下要走的路，那么只要有一个头结点和当前相遇节点同时跑的话，两者再次相遇的时候就是头结点了。代码如下
+
+```
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        ListNode* left  = head;
+        ListNode* right = head;
+        while(right){
+            left = left->next;
+            right = right->next;
+            if(right){
+                right = right->next;
+            }
+            else{
+                return nullptr;
+            }
+            if(left==right){
+                left = head;
+                while(left!=right){
+                    left = left->next;
+                    right=right->next;
+                }
+                return left;
+            }
+        }
+        return nullptr;
+    }
+};
+```
+
+287题，是上面142题的变种，只不过变成数组了，代码如下
+
+```
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int left = 0;
+        int right = 0;
+        while(true){
+            left = nums[left];
+            right = nums[nums[right]];
+            if(left==right){
+                left = 0;
+                while(left!=right){
+                    left = nums[left];
+                    right=nums[right];
+                }
+                return left;
+            }
+        }
+        return 0;
     }
 };
 ```
