@@ -1,0 +1,243 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
+#include <algorithm>
+#include <list>
+#include <stack>
+#include <set>
+#include <numeric>
+#include <unordered_set>
+using namespace std;
+
+struct ListNode
+{
+	int r;
+	int c;
+
+	ListNode *east;
+	ListNode *west;
+	ListNode *south;
+	ListNode *north;
+
+	ListNode(int r, int c) : r(r), c(c), east(nullptr), west(nullptr), south(nullptr), north(nullptr){}
+
+};
+
+struct CompClass
+{
+	bool operator()(const int& left, const int& right) {
+		return left < right;
+	}
+};
+/*
+test cases
+1
+
+
+*/
+
+int main() {
+	//CompClass mycompare;
+	//vector<int> test = { 1,45,6,7,1,34 };
+	//sort(test.begin(), test.end(), mycompare);
+
+	int T;
+
+	cin >> T;
+	for (int i = 1; i <= T; i++)
+	{
+		int N, R, C, nowR, nowC;
+		string str;
+		cin >> N >> R >> C >> nowR >> nowC;
+		cin >> str;
+		unordered_set<int> isvisit;
+		auto test = (nowR << 16) + nowC;
+
+		for (int idx = 0; idx < str.size(); idx++)
+		{
+			test = (nowR << 16) + nowC;
+			isvisit.insert(test);
+
+			switch (str[idx])
+			{
+			case'W': {
+				nowC--;
+				test = (nowR << 16) + nowC;
+				while (isvisit.find(test) != isvisit.end())
+				{
+					nowC--;
+					test = (nowR << 16) + nowC;
+				}
+				break;
+			}
+			case'E': {
+				nowC++;
+				test = (nowR << 16) + nowC;
+				while (isvisit.find(test) != isvisit.end())
+				{
+					nowC++;
+					test = (nowR << 16) + nowC;
+				}
+				break;
+			}
+			case 'N': {
+				nowR--;
+				test = (nowR << 16) + nowC;
+				while (isvisit.find(test) != isvisit.end())
+				{
+					nowR--;
+					test = (nowR << 16) + nowC;
+				}
+				break;
+			}
+			case 'S': {
+				nowR++;
+				test = (nowR << 16) + nowC;
+				while (isvisit.find(test) != isvisit.end())
+				{
+					nowR++;
+					test = (nowR << 16) + nowC;
+				}
+				break;
+			}
+			}
+			
+		}
+
+		cout << "Case #" << i << ": " << nowR << " " << nowC << endl;
+	}
+	return 0;
+}
+
+
+
+//int main() {
+//	//CompClass mycompare;
+//	//vector<int> test = { 1,45,6,7,1,34 };
+//	//sort(test.begin(), test.end(), mycompare);
+//
+//	int T;
+//	
+//	cin >> T;
+//	for (int i = 1; i <= T; i++)
+//	{
+//		int N, R, C, nowR, nowC;
+//		string str;
+//		cin >> N >> R >> C >> nowR >> nowC;
+//		cin >> str;
+//		unordered_map<int, unordered_map<int, ListNode*>> graph;
+//		ListNode* nowNode;
+//		ListNode* eastNode;
+//		ListNode* westNode;
+//		ListNode* northNode;
+//		ListNode* southNode;
+//		ListNode* lastNode;
+//
+//		for (int r = 1; r <= R; r++)
+//		{
+//			for (int c = 1; c <= C; c++)
+//			{
+//				ListNode* now = new ListNode(r, c);
+//				graph[r][c] = now;
+//			}
+//		}
+//
+//		graph[1][1]->east = graph[1][2];
+//		graph[1][1]->south = graph[2][1]; 
+//
+//
+//		graph[R][1]->north = graph[R-1][1];
+//		graph[R][1]->east = graph[R][2];
+//
+//		graph[1][C]->west = graph[1][C - 1];
+//		graph[1][C]->south = graph[2][C];
+//
+//		graph[R][C]->north = graph[R - 1][C];
+//		graph[R][C]->west = graph[R][C - 1];
+//
+//		for (int r = 2; r < R; r++)
+//		{
+//			graph[r][1]->south = graph[r + 1][1];
+//			graph[r][1]->north = graph[r - 1][1];
+//			graph[r][1]->east  = graph[r][2];
+//
+//			graph[r][C]->south = graph[r + 1][C];
+//			graph[r][C]->north = graph[r - 1][C];
+//			graph[r][C]->west = graph[r][C-1];
+//
+//		}
+//		for (int c = 2; c < C; c++)
+//		{
+//			graph[1][c]->east = graph[1][c + 1];
+//			graph[1][c]->west = graph[1][c - 1];	 
+//			graph[1][c]->south = graph[2][c];
+//
+//			graph[R][c]->east = graph[R][c + 1];
+//			graph[R][c]->west = graph[R][c - 1];
+//			graph[R][c]->north = graph[R-1][c];
+//
+//		}
+//
+//		for (int r = 2; r < R; r++)
+//		{
+//			for (int c = 2; c < C; c++)
+//			{
+//				graph[r][c]->east = graph[r][c + 1];
+//				graph[r][c]->west = graph[r][c - 1];
+//				graph[r][c]->south = graph[r + 1][c];
+//				graph[r][c]->north = graph[r - 1][c];
+//			}
+//		}
+//		nowNode = graph[nowR][nowC];
+//		for (int idx = 0; idx < str.size(); idx++)
+//		{
+//			eastNode = nowNode->east;
+//			westNode = nowNode->west;
+//			southNode = nowNode->south;
+//			northNode = nowNode->north;
+//			lastNode = nowNode;
+//			switch (str[idx])
+//			{
+//			case 'E': {
+//				nowNode = nowNode->east;
+//				break;
+//			}
+//			case 'W': {
+//				nowNode = nowNode->west;
+//				break;
+//			}
+//			case'S': {
+//				nowNode = nowNode->south;
+//				break;
+//			}
+//			case 'N': {
+//				nowNode = nowNode->north;
+//				break;
+//			}
+//			}
+//			delete lastNode;
+//			if (eastNode)
+//			{
+//				eastNode->west = westNode;
+//			}
+//			if (westNode)
+//			{
+//				westNode->east = eastNode;
+//			}
+//			if (southNode)
+//			{
+//				southNode->north = northNode;
+//			}
+//			if (northNode)
+//			{
+//				northNode->south = southNode;
+//			}
+//		}
+//
+//
+//		cout << "Case #" << i << ": " << nowNode->r << " " << nowNode->c << endl;
+//	}
+//	return 0;
+//}
