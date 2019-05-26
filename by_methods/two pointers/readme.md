@@ -481,3 +481,33 @@ private:
 };
 ```
 
+532题：这一题比较特殊，用的是unordered_map
+
+```
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        if(k<0||nums.size()<=1)
+            return 0;
+        unordered_map<int, int> mp;
+        for(auto& n : nums){
+            mp[n]++;
+        }
+        int out = 0;
+        for(auto& iter : mp){
+            if(k==0){
+                if(iter.second>=2){
+                    out++;
+                }
+            }
+            else{
+                if(mp.find(iter.first+k)!=mp.end()){
+                    out++;
+                }
+            }
+        }
+        return out;
+    }
+};
+```
+
