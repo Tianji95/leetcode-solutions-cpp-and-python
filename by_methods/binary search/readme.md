@@ -28,8 +28,6 @@
 
 297
 
-302
-
 410
 
 475
@@ -359,3 +357,162 @@ public:
     }
 };
 ```
+
+236题，其实这道题算是一道我认为稍微有些新东西的题目，树形结构查找两个节点的最小父节点，因为这个时候大部分人都会总想着从下往上找，这道题目是需要从上往下找的，那么就分别找左右两个子节点，如果遇到p或者q了就返回，如果两个都找到了，就说明是这个节点。
+
+```
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* node, TreeNode* p, TreeNode* q) {
+        if(node==p || node==q ||!node)
+            return node;
+
+        TreeNode* left  = lowestCommonAncestor(node->left, p, q);
+        TreeNode* right = lowestCommonAncestor(node->right, p, q);
+        if(!left){
+            return right;
+        }
+        if(!right){
+            return left;
+        }
+        return node;
+    }
+};
+```
+
+297题：树结构的序列化和反序列化，这道题最主要的是把叶子结点后面两个都设置成n，然后遍历的时候不要使用字符串+法，应该使用push_back，会快非常多！！！！！！！！！！！！！！！！
+
+```
+class Codec {
+public:
+
+    void seriIter(TreeNode* node, string& s){
+        if(!node){
+            s.push_back('n');
+            s.push_back(',');
+            return;
+        }
+        string nowval(to_string(node->val));
+        for(int i = 0; i < nowval.size(); i++){
+            s.push_back(nowval[i]);
+        }
+        s.push_back(',');
+        seriIter(node->left, s);
+        seriIter(node->right, s);
+    }
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        string out("");
+        seriIter(root, out);
+        return out;
+    }
+
+    TreeNode* deserIter(string& data, int& idx){
+        int right = idx;
+        string now("");
+        while(right<data.size()&&data[right]!=','){
+            now.push_back(data[right]);
+            right++;
+        }
+        idx = right+1;
+        if(now=="n"){
+            return nullptr;
+        }
+        
+        TreeNode* node = new TreeNode(stoi(now));
+        node->left = deserIter(data, idx);
+        node->right= deserIter(data, idx);
+        return node;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        int idx = 0;
+        return deserIter(data, idx);
+    }
+};
+```
+
+475题，给一堆房子的位置（一维数组），再给一堆加热器（一维数组），然后找到最小的加热器加热半径，这道题给两个指针，然后遍历一下就行了。
+
+```
+class Solution {
+public:
+    int findRadius(vector<int>& houses, vector<int>& heaters) {
+        int len = heaters.size();
+        int out = INT_MIN;
+        sort(heaters.begin(), heaters.end());
+        sort(houses.begin(), houses.end());
+        int nextH = 0;
+        int prevH = INT_MIN;
+        int leftval;
+        int rightval;
+        
+        for(int i = 0; i < houses.size(); i++){
+            if(prevH==INT_MIN && houses[i]>heaters[0]){
+                prevH = 0;
+                nextH = 1;
+                prevH = min(prevH, len-1);
+                nextH = min(nextH, len-1);
+
+            }
+            while(nextH < len-1 && houses[i]>heaters[nextH]){
+                nextH++;
+                prevH++;
+            }
+            if(prevH==INT_MIN)
+                leftval = INT_MAX;
+            else
+                leftval = abs(heaters[prevH]-houses[i]);
+            rightval = abs(houses[i]-heaters[nextH]);
+            out = max(out, min(leftval, rightval));
+        }
+        return out;
+    }
+};
+```
+
+483题
+
+```
+class Solution {
+public:
+    string smallestGoodBase(string n) {
+        long long input = stoll(n);
+        long long x = 1;
+        for(int i = 62; i >=1; i--){
+            if((x<<i)<input){
+                long long cur = mysolve(input, i);
+                if(cur!=0)
+                    return to_string(cur);
+            }
+        }
+        return to_string(input-1);
+    }
+    
+    long long mysolve(long long input, int i){
+        long long left = 1;
+        long long right= (long long)(pow(input, 1.0/i)+1);
+        long long mid;
+        unsigned long long sum;
+        unsigned long long now;
+        while(left <= right){
+            mid = (left+right)/2;
+            sum = 1;
+            now = 1;
+            for(int j = 1; j <= i; j++){
+                now *= mid;
+                sum += now;
+            }
+            if(sum == input)
+                return mid;
+            if(sum > input)
+                right = mid-1;
+            else
+                left = mid+1;
+        }
+        return 0;
+    }
+};
+```
+
