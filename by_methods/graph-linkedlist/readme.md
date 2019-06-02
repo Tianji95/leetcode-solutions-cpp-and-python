@@ -309,4 +309,43 @@ public:
 };
 ```
 
+**109题，这道题还是很典型的**因为可以把链表弄成平衡二叉树结构，使用分治的方法，对单个节点进行不断更新和迭代，算法不难想，但是代码不是很好写
+
+```
+class Solution {
+public:
+    ListNode* now;
+    
+    TreeNode* dfs(int begin, int end){
+        if(begin>end)
+            return nullptr;
+
+        int mid = (begin+end)/2;
+        TreeNode* left = dfs(begin, mid-1);
+        TreeNode* nownode = new TreeNode(now->val);
+        nownode->left = left;
+
+        now = now->next;
+
+        TreeNode* right = dfs(mid+1, end);
+        nownode->right = right;
+
+        return nownode;
+    }
+
+    TreeNode* sortedListToBST(ListNode* head) {
+        if(!head)
+            return nullptr;
+
+        int count = 0;
+        now = head;
+        while(now){
+            now = now->next;
+            count++;
+        }
+        now = head;
+        return dfs(0, count-1);
+    }
+};
+```
 
