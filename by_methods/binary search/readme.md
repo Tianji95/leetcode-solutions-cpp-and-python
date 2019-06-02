@@ -516,3 +516,37 @@ public:
 };
 ```
 
+668题，二分搜索，是属于那种给一个矩阵，然后进行二分搜索的，具体方法就是设置以后left和一个right，然后取medium值，计算每一行比medium值小的个数，全部加起来，然后再根据个数计算应该left还是right。不过还是要注意这里面的乘法要比除法快很多，尽量用乘法来解决问题
+
+```
+class Solution {
+public:
+    int countsmall(int mid, int height, int width){
+        int count = 0;
+        int i = 1;
+        int j = width;
+        while(i<=height && j > 0){
+            while(i*j>mid) --j;
+            count+=j;
+            i++;
+        }
+        return count;
+    }
+    int findKthNumber(int m, int n, int k) {
+        int left = 1;
+        int right = m*n+1;
+        while(left < right){
+            int mid = left + (right - left)/2;
+            int count = countsmall(mid, m, n);
+            if(count >= k){
+                right = mid;
+            }
+            else{
+                left = mid+1;
+            }
+        }
+        return right;
+    }
+};
+```
+
