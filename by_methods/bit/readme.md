@@ -254,3 +254,111 @@ public:
 };
 ```
 
+268题，查找0-n失踪的那个数字，可以用异或，也可以用加法
+
+```
+class Solution {
+public:
+    int missingNumber(vector<int>& nums) {
+        long total = nums.size()*(nums.size()+1)/2;
+        long now = accumulate(nums.begin(), nums.end(), 0);
+
+        return total-now;
+    }
+    //第二种方法
+    int missingNumber(vector<int>& nums) {
+        int res = 0;
+        for(int i = 0; i < nums.size(); i++){
+            res ^= (i + 1) ^ nums[i];
+        }
+        return res;
+    }
+};
+
+
+```
+
+318题，这道题是查找最长的两个字符串长度的乘积，注意，这道题学到的方法是**任何能用unordered_set或者isvisited的东西很大概率可以用位运算来进行标志**
+
+
+
+```
+struct MyComp{
+    bool operator()(const string& left, const string& right){
+        return left.size()<right.size();
+    }
+};
+
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        int out = 0;
+        int len = words.size();
+        vector<int> mask(len, 0);
+        
+        //sort(words.begin(), words.end(), MyComp());
+
+        for(int i = 0; i < len; i++){
+            for(auto& c : words[i]){
+                mask[i] |= (1<<(c-'a'));
+            }
+        }
+
+        for(int i = len-1; i >= 0; i--){
+            for(int j = i-1; j >= 0; j--){
+                if((mask[i] & mask[j])==0){
+                    int tmp = words[i].size() * words[j].size();
+                    out = max(out, tmp);
+                }
+            }
+        }
+
+        return out;
+    }
+};
+```
+
+
+
+326题，查找是不是3的n次方的题，很简单
+
+```
+class Solution {
+public:
+    bool isPowerOfThree(int n) {
+        if(n<=0 || n>=INT_MAX)
+            return false;
+        int MAX = 1162261467;
+        return MAX % n==0;
+    }
+};
+```
+
+342题，跟上面类似，但是是4的倍数，方法不太一样
+
+```
+class Solution {
+public:
+    bool isPowerOfFour(int num) {
+        if(num==1) return true;
+        
+        for(int i = 2; i < 32; i+=2){
+            if(num==(1<<i))
+                return true;
+        }
+        return false;
+    }
+};
+```
+
+371题，用位运算实现加法
+
+```
+class Solution {
+public:
+    int getSum(int a, int b) {     
+        return b==0?a:getSum(a^b, (a&b&0xffffffff)<<1);
+    }
+};
+```
+
